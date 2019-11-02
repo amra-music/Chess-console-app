@@ -1,14 +1,10 @@
 package ba.unsa.etf.rpr;
 
 public class Rook extends ChessPiece {
-    @Override
-    String getPosition() {
-        return null;
-    }
 
-    @Override
-    Color getColor() {
-        return null;
+
+    public Rook(String position, Color color) {
+        super(position, color);
     }
 
     @Override
