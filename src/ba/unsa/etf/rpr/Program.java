@@ -1,8 +1,8 @@
 package ba.unsa.etf.rpr;
 
-public class Main {
-     public static void main(String[] args) {
-    	System.out.println("Potrebno je napraviti neki uvodni kod koji realizira igru šaha. Program neće imati neki korisnički interfejs, pošto to nije fokus u ovom trenutku. Pošto nismo radili vještačku inteligenciju, neće biti ni moguće igrati protiv računara. Zanemarićemo i neka od pravila same igre kako bi zadatak bio jednostavniji, kao što su: rokada, razmjena pijuna za druge figure, mat itd.\n" +
+public class Program {
+    public static void main(String[] args) {
+        System.out.println("Potrebno je napraviti neki uvodni kod koji realizira igru šaha. Program neće imati neki korisnički interfejs, pošto to nije fokus u ovom trenutku. Pošto nismo radili vještačku inteligenciju, neće biti ni moguće igrati protiv računara. Zanemarićemo i neka od pravila same igre kako bi zadatak bio jednostavniji, kao što su: rokada, razmjena pijuna za druge figure, mat itd.\n" +
                 "\n" +
                 "Pravila igre šah se smatraju da su poznata, ako nisu predlažem da se upoznate.\n" +
                 "\n" +
