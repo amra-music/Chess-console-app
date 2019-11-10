@@ -18,9 +18,17 @@ public class Pawn extends ChessPiece {
         String oldPosition = getPosition().toUpperCase();
         position = position.toUpperCase();
         int newPositionSecond = abs(oldPosition.charAt(1) - position.charAt(1));
-        if (position.charAt(0)!=oldPosition.charAt(0) ||
-                ( newPositionSecond == 2 && oldPosition.charAt(1) != '2' && oldPosition.charAt(1) !='7')
-        || (newPositionSecond > 1 && oldPosition.charAt(1) != '2' && oldPosition.charAt(1) !='7'))
+        boolean jede = false;
+        int razlika = abs(oldPosition.charAt(0) - position.charAt(0));
+        if (color.equals(Color.WHITE) && position.charAt(1) - oldPosition.charAt(1) == 1 && razlika == 1) {
+            jede = true;
+        }
+        if (color.equals(Color.BLACK) && oldPosition.charAt(1) - position.charAt(1) == 1 && razlika == 1) {
+            jede = true;
+        }
+        if (position.charAt(0) != oldPosition.charAt(0) && !jede ||
+                (newPositionSecond == 2 && oldPosition.charAt(1) != '2' && oldPosition.charAt(1) != '7')
+                || (newPositionSecond > 2))
             throw new IllegalChessMoveException("Potez nije dozvoljen za ovu figuru");
         this.position = position;
     }

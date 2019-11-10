@@ -17,8 +17,8 @@ public class Board {
         board[0][0] = new Rook("A1", ChessPiece.Color.WHITE);
         board[0][1] = new Knight("B1", ChessPiece.Color.WHITE);
         board[0][2] = new Bishop("C1", ChessPiece.Color.WHITE);
-        board[0][3] = new King("D1", ChessPiece.Color.WHITE);
-        board[0][4] = new Queen("E1", ChessPiece.Color.WHITE);
+        board[0][3] = new Queen("D1", ChessPiece.Color.WHITE);
+        board[0][4] = new King("E1", ChessPiece.Color.WHITE);
         board[0][5] = new Bishop("F1", ChessPiece.Color.WHITE);
         board[0][6] = new Knight("G1", ChessPiece.Color.WHITE);
         board[0][7] = new Rook("H1", ChessPiece.Color.WHITE);
@@ -53,33 +53,74 @@ public class Board {
     }
 
     public boolean isCheck(ChessPiece.Color color) {
+        String kingPosition = "";
+
+        // Trazimo poziciju kralja
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (board[i][j] instanceof King && board[i][j].color.equals(color)) {
+                    // Nasli smo ga
+                    kingPosition = board[i][j].getPosition();
+                    break;
+                }
+            }
+        }
+
+        // Prolazimo kroz svaku figuru druge boje
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (board[i][j] != null && !board[i][j].color.equals(color)) {
+                    // Pokusavamo pomjerit na poziciju kralja
+                    String staraPozicija = board[i][j].getPosition();
+                    try {
+                        board[i][j].move(kingPosition);
+                    } catch (IllegalChessMoveException ignored) {
+                        // Nije moguce pomjerit
+                        continue;
+                    }
+
+                    // Moguce je pomjerit
+                    try {
+                        provjeriPreskakanjeFigure(staraPozicija, board[i][j].getClass(), kingPosition);
+                    } catch (IllegalChessMoveException ignored) {
+                        // Preskace figure => nije legalan potez
+                        // Vracamo nazad figuru
+                        try {
+                            board[i][j].move(staraPozicija);
+                        } catch (IllegalChessMoveException ignore) {
+                            // Ne bi se nikad trebalo desit
+                        }
+                        continue;
+                    }
+                    // Inace, sah je
+
+                    // Vracamo nazad figuru
+                    try {
+                        board[i][j].move(staraPozicija);
+                    } catch (IllegalChessMoveException ignore) {
+                        // Ne bi se nikad trebalo desit
+                    }
+
+                    return true;
+                }
+            }
+        }
 
         return false;
     }
 
-    /* void move(Class type, ChessPiece.Color color, String position) ​pomjera
-    figuru koja pripada klasi type, boje color, na poziciju datu stringom position. Ova
-    metoda treba najprije pronaći figuru tipa ​type date boje među aktivnim figurama.
-    Zatim treba pozvati njenu metodu ​move da provjeri da li je poziv legalan. Pošto
-    može biti više figura iste boje i tipa, treba pronaći prvu za koju je potez legalan i
-    povući potez. U slučaju da ne postoji niti jedna figura za koju je potez legalan
-    treba baciti IllegalChessMoveException. Konačno treba provjeriti da li se na
-    odredišnoj poziciji već nalazi figura. Ako se nalazi figura druge boje, ona je
-    "pojedena" i treba je izbaciti, a ako se nalazi figura iste boje treba baciti
-    IllegalChessMoveException. Također treba voditi računa da kraljica, lovac, top i
-    pijuni ne mogu preskakati druge figure.
-    */
+
     public void move(Class type, ChessPiece.Color color, String position) throws IllegalChessMoveException {
 
         //polje u ploci na novoj poziciji
-
+        position=position.toUpperCase();
         int novaPozicijaX = position.charAt(1) - '1';
         int novaPozicijaY = position.charAt(0) - 'A';
 
 
         //ista boja
         if (board[novaPozicijaX][novaPozicijaY] != null) {
-            if (board[novaPozicijaX][novaPozicijaX].getColor() == color) throw new IllegalChessMoveException();
+            if (board[novaPozicijaX][novaPozicijaY].getColor() == color) throw new IllegalChessMoveException();
         }
 
         ArrayList<ChessPiece> figure = new ArrayList<>(8);
@@ -94,70 +135,37 @@ public class Board {
                 }
             }
         }
-       /* System.out.println("FIGURE U LISTI");
-        for(int i=0;i<figure.size();i++){
 
-            figure.get(i).ispisi();
-        }
-        System.out.println("*****");*/
-
-        switch (figure.size()) {
-            case 0:
-                throw new IllegalChessMoveException();
-            case 1:
-                try {
-                    staraPozicija = figure.get(0).getPosition();
-                    figure.get(0).move(position);
-                    board[figure.get(0).getPosition().charAt(1) - '1'][figure.get(0).getPosition().charAt(0) - 'A'] = figure.get(0);
-                    pomakFigure = true;
-                    int staraPozicijaX = staraPozicija.charAt(1) - '1';
-                    int staraPozicijaY = staraPozicija.charAt(0) - 'A';
-                    board[staraPozicijaX][staraPozicijaX] = null;
-
-                } catch (Exception e) {
-                    throw new IllegalChessMoveException();
-                }
+        if (figure.size() == 0)
+            throw new IllegalChessMoveException();
+        for (int i = 0; i < figure.size(); i++) {
+            try {
+                staraPozicija = figure.get(i).getPosition();
+                figure.get(i).move(position);
+                board[figure.get(i).getPosition().charAt(1) - '1'][figure.get(i).getPosition().charAt(0) - 'A'] = figure.get(i);
+                pomakFigure = true;
+                int staraPozicijaX = staraPozicija.charAt(1) - '1';
+                int staraPozicijaY = staraPozicija.charAt(0) - 'A';
+                board[staraPozicijaX][staraPozicijaY] = null;
                 break;
-            case 2:
-                try {
-                    staraPozicija = figure.get(0).getPosition();
-                    figure.get(0).move(position);
-                    board[figure.get(0).getPosition().charAt(1) - '1'][figure.get(0).getPosition().charAt(0) - 'A'] = figure.get(0);
-                    pomakFigure = true;
-                    int staraPozicijaX = staraPozicija.charAt(1) - '1';
-                    int staraPozicijaY = staraPozicija.charAt(0) - 'A';
-                    board[staraPozicijaX][staraPozicijaX] = null;
-                } catch (Exception e) {
-                    try {
-                        staraPozicija = figure.get(1).getPosition();
-                        figure.get(1).move(position);
-                        board[figure.get(1).getPosition().charAt(1) - '1'][figure.get(1).getPosition().charAt(0) - 'A'] = figure.get(1);
-                        pomakFigure = true;
-                        int staraPozicijaX = staraPozicija.charAt(1) - '1';
-                        int staraPozicijaY = staraPozicija.charAt(0) - 'A';
-                        board[staraPozicijaX][staraPozicijaX] = null;
-                    } catch (Exception k) {
-                        throw new IllegalChessMoveException();
-                    }
-                }
-                break;
-            default:
-                for (int i = 0; i < figure.size(); i++) {
-                    try {
-                        staraPozicija = figure.get(i).getPosition();
-                        figure.get(i).move(position);
-                        board[figure.get(i).getPosition().charAt(1) - '1'][figure.get(i).getPosition().charAt(0) - 'A'] = figure.get(i);
-                        pomakFigure = true;
-                        int staraPozicijaX = staraPozicija.charAt(1) - '1';
-                        int staraPozicijaY = staraPozicija.charAt(0) - 'A';
-                        board[staraPozicijaX][staraPozicijaY] = null;
-                        break;
-                    } catch (IllegalChessMoveException e) {
-                    }
-                }
-                if (!pomakFigure) throw new IllegalChessMoveException();
+            } catch (IllegalChessMoveException e) {
+            }
         }
+        if (!pomakFigure) throw new IllegalChessMoveException();
 
+        provjeriPreskakanjeFigure(staraPozicija, type, position);
+        if (isCheck(color))
+            vratiNazadFiguru(staraPozicija, position);
+    }
+
+    private void vratiNazadFiguru(String staraPozicija, String position) throws IllegalChessMoveException {
+        board[position.charAt(1) - '1'][position.charAt(0) - 'A'].move(staraPozicija);
+        board[staraPozicija.charAt(1) - '1'][staraPozicija.charAt(0) - 'A'] = board[position.charAt(1) - '1'][position.charAt(0) - 'A'];
+        board[position.charAt(1) - '1'][position.charAt(0) - 'A'] = null;
+        throw new IllegalChessMoveException();
+    }
+
+    private void provjeriPreskakanjeFigure(String staraPozicija, Class type, String position) throws IllegalChessMoveException {
         boolean queenAsBishop = false;
         if (Queen.class.equals(type)) {
             if (staraPozicija.charAt(0) != position.charAt(0) && staraPozicija.charAt(1) != position.charAt(1))
@@ -167,12 +175,10 @@ public class Board {
         if (Pawn.class.equals(type)) {
             if (Math.abs(staraPozicija.charAt(1) - position.charAt(1)) == 2) {
                 if (board[staraPozicija.charAt(1) - '1' + 1][staraPozicija.charAt(0) - 'A'] != null) {
-                    board[position.charAt(1) - '1'][position.charAt(0) - 'A'].move(staraPozicija);
-                    board[staraPozicija.charAt(1) - '1'][staraPozicija.charAt(0) - 'A'] = board[position.charAt(1) - '1'][position.charAt(0) - 'A'];
-                    board[position.charAt(1) - '1'][position.charAt(0) - 'A'] = null;
-                    throw new IllegalChessMoveException();
+                    vratiNazadFiguru(staraPozicija, position);
                 }
             }
+
 
         } else if (Rook.class.equals(type) || (!queenAsBishop && Queen.class.equals(type))) {
             boolean mijenjamPrvu = false;
@@ -189,19 +195,11 @@ public class Board {
             while (i != position.charAt(koordinata)) {
                 if (mijenjamPrvu) {
                     if (board[staraPozicija.charAt(1) - '1'][i - 'A'] != null) {
-                        board[position.charAt(1) - '1'][position.charAt(0) - 'A'].move(staraPozicija);
-                        board[staraPozicija.charAt(1) - '1'][staraPozicija.charAt(0) - 'A'] = board[position.charAt(1) - '1'][position.charAt(0) - 'A'];
-                        board[position.charAt(1) - '1'][position.charAt(0) - 'A'] = null;
-                        throw new IllegalChessMoveException();
-
+                        vratiNazadFiguru(staraPozicija, position);
                     }
                 } else {
                     if (board[i - '1'][staraPozicija.charAt(0) - 'A'] != null) {
-                        board[position.charAt(1) - '1'][position.charAt(0) - 'A'].move(staraPozicija);
-                        board[staraPozicija.charAt(1) - '1'][staraPozicija.charAt(0) - 'A'] = board[position.charAt(1) - '1'][position.charAt(0) - 'A'];
-                        board[position.charAt(1) - '1'][position.charAt(0) - 'A'] = null;
-
-                        throw new IllegalChessMoveException();
+                        vratiNazadFiguru(staraPozicija, position);
                     }
                 }
                 i += pomak;
@@ -220,10 +218,7 @@ public class Board {
 
             while (i != position.charAt(0) && j != position.charAt(1)) {
                 if (board[j - '1'][i - 'A'] != null) {
-                    board[position.charAt(1) - '1'][position.charAt(0) - 'A'].move(staraPozicija);
-                    board[staraPozicija.charAt(1) - '1'][staraPozicija.charAt(0) - 'A'] = board[position.charAt(1) - '1'][position.charAt(0) - 'A'];
-                    board[position.charAt(1) - '1'][position.charAt(0) - 'A'] = null;
-                    throw new IllegalChessMoveException();
+                    vratiNazadFiguru(staraPozicija, position);
                 }
                 i += pomakX;
                 j += pomakY;
