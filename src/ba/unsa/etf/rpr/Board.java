@@ -141,6 +141,8 @@ public class Board {
         for (int i = 0; i < figure.size(); i++) {
             try {
                 staraPozicija = figure.get(i).getPosition();
+                if (figure.get(i) instanceof Pawn && board[novaPozicijaX][novaPozicijaY] == null && position.charAt(0) != staraPozicija.charAt(0))
+                    continue;
                 figure.get(i).move(position);
                 board[figure.get(i).getPosition().charAt(1) - '1'][figure.get(i).getPosition().charAt(0) - 'A'] = figure.get(i);
                 pomakFigure = true;
