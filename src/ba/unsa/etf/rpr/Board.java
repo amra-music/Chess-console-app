@@ -120,7 +120,7 @@ public class Board {
 
         //ista boja
         if (board[novaPozicijaX][novaPozicijaY] != null) {
-            if (board[novaPozicijaX][novaPozicijaY].getColor() == color) throw new IllegalChessMoveException();
+            if (board[novaPozicijaX][novaPozicijaY].getColor() == color) throw new IllegalChessMoveException("Illegal move");
         }
 
         ArrayList<ChessPiece> figure = new ArrayList<>(8);
@@ -137,7 +137,7 @@ public class Board {
         }
 
         if (figure.size() == 0)
-            throw new IllegalChessMoveException();
+            throw new IllegalChessMoveException("Illegal move");
         for (int i = 0; i < figure.size(); i++) {
             try {
                 staraPozicija = figure.get(i).getPosition();
@@ -153,7 +153,7 @@ public class Board {
             } catch (IllegalChessMoveException e) {
             }
         }
-        if (!pomakFigure) throw new IllegalChessMoveException();
+        if (!pomakFigure) throw new IllegalChessMoveException("Illegal move");
 
         provjeriPreskakanjeFigure(staraPozicija, type, position);
         if (isCheck(color))
@@ -164,7 +164,7 @@ public class Board {
         board[position.charAt(1) - '1'][position.charAt(0) - 'A'].move(staraPozicija);
         board[staraPozicija.charAt(1) - '1'][staraPozicija.charAt(0) - 'A'] = board[position.charAt(1) - '1'][position.charAt(0) - 'A'];
         board[position.charAt(1) - '1'][position.charAt(0) - 'A'] = null;
-        throw new IllegalChessMoveException();
+        throw new IllegalChessMoveException("Illegal move");
     }
 
     private void provjeriPreskakanjeFigure(String staraPozicija, Class type, String position) throws IllegalChessMoveException {
