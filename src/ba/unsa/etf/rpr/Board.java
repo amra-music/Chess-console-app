@@ -113,14 +113,15 @@ public class Board {
     public void move(Class type, ChessPiece.Color color, String position) throws IllegalChessMoveException {
 
         //polje u ploci na novoj poziciji
-        position=position.toUpperCase();
+        position = position.toUpperCase();
         int novaPozicijaX = position.charAt(1) - '1';
         int novaPozicijaY = position.charAt(0) - 'A';
 
 
         //ista boja
         if (board[novaPozicijaX][novaPozicijaY] != null) {
-            if (board[novaPozicijaX][novaPozicijaY].getColor() == color) throw new IllegalChessMoveException("Illegal move");
+            if (board[novaPozicijaX][novaPozicijaY].getColor() == color)
+                throw new IllegalChessMoveException("Illegal move");
         }
 
         ArrayList<ChessPiece> figure = new ArrayList<>(8);

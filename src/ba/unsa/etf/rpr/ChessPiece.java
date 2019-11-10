@@ -6,7 +6,7 @@ abstract public class ChessPiece {
     Color color;
     String position;
 
-    public void ispisi(){
+    public void ispisi() {
         System.out.println(position + color + "  ");
     }
 

@@ -60,8 +60,7 @@ public class Program {
             if (white) {
                 color = ChessPiece.Color.BLACK;
                 white = false;
-            }
-            else {
+            } else {
                 color = ChessPiece.Color.WHITE;
                 white = true;
             }
