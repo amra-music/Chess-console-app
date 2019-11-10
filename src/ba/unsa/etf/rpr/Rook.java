@@ -9,9 +9,7 @@ public class Rook extends ChessPiece {
 
     @Override
     void move(String position) throws IllegalChessMoveException {
-        if (!isCorrect(position)) {
-            throw new IllegalArgumentException("Neispravna pozicija");
-        }
+        if (!isCorrect(position)) throw new IllegalArgumentException("Neispravna pozicija");
         String oldPosition = getPosition().toUpperCase();
         position = position.toUpperCase();
         if (oldPosition.charAt(0) != position.charAt(0) && oldPosition.charAt(1) != position.charAt(1))

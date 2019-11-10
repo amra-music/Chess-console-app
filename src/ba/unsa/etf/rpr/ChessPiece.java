@@ -1,20 +1,15 @@
 package ba.unsa.etf.rpr;
 
 abstract public class ChessPiece {
-    public static enum Color {BLACK, WHITE}
+    public enum Color {BLACK, WHITE}
 
     Color color;
     String position;
 
-    public void ispisi() {
-        System.out.println(position + color + "  ");
-    }
 
     boolean isCorrect(String position) {
-        if (position.length() != 2 || !((position.charAt(0) >= 'A' && position.charAt(0) <= 'H') ||
-                (position.charAt(0) >= 'a' && position.charAt(0) <= 'h')) || !(position.charAt(1) >= '1' && position.charAt(1) <= '8'))
-            return false;
-        return true;
+        return position.length() == 2 && ((position.charAt(0) >= 'A' && position.charAt(0) <= 'H') ||
+                (position.charAt(0) >= 'a' && position.charAt(0) <= 'h')) && (position.charAt(1) >= '1' && position.charAt(1) <= '8');
     }
 
     public ChessPiece(String position, Color color) {

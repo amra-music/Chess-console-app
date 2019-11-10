@@ -7,10 +7,6 @@ public class Board {
 
     private ChessPiece[][] board;
 
-    public ChessPiece[][] getBoard() {
-        return board;
-    }
-
     public Board() {
         board = new ChessPiece[8][8];
         // bijele figure
@@ -151,7 +147,7 @@ public class Board {
                 int staraPozicijaY = staraPozicija.charAt(0) - 'A';
                 board[staraPozicijaX][staraPozicijaY] = null;
                 break;
-            } catch (IllegalChessMoveException e) {
+            } catch (IllegalChessMoveException ignored) {
             }
         }
         if (!pomakFigure) throw new IllegalChessMoveException("Illegal move");
